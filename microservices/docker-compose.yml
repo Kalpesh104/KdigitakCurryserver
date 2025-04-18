@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+  course-service:
+    build: ./course-service
+    container_name: course-service
+    restart: on-failure
+    ports:
+      - '5001:5001'
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://mongo:27017/course-service
+    depends_on:
+      - mongo
+
+  instructor-service:
+    build: ./instructor-service
+    container_name: instructor-service
+    restart: on-failure
+    ports:
+      - '5002:5002'
+    environment:
+      - PORT=5002
+      - MONGO_URI=mongodb://mongo:27017/instructor-service
+    depends_on:
+      - mongo
+
+  lecture-service:
+    build: ./lecture-service
+    container_name: lecture-service
+    restart: on-failure
+    ports:
+      - '5003:5003'
+    environment:
+      - PORT=5003
+      - MONGO_URI=mongodb://mongo:27017/lecture-service
+    depends_on:
+      - mongo
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    restart: on-failure
+    ports:
+      - '5004:5004'
+    environment:
+      - PORT=5004
+      - MONGO_URI=mongodb://mongo:27017/user-service
+      - JWT_SECRET=your_jwt_secret
+      - JWT_EXPIRATION=3600
+    depends_on:
+      - mongo
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: on-failure
+    ports:
+      - '5000:5000'
+    depends_on:
+      - course-service
+      - instructor-service
+      - lecture-service
+      - user-service
+
+volumes:
+  mongo-data:
+  consul:
+    image: consul:1.11.3
+    container_name: consul
+    ports:
+      - '8500:8500'
+    command: "agent -dev -client=0.0.0.0"
+    restart: always
+    networks:
+      - default

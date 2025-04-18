@@ -1,0 +1,10 @@
+docker-compose up --build
+MongoDB will run on localhost:27017
+
+course-service → localhost:5001
+
+instructor-service → localhost:5002
+
+lecture-service → localhost:5003
+
+user-service → localhost:5004
