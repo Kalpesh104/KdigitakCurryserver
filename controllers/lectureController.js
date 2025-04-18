@@ -1,8 +1,8 @@
 const Lecture = require('../models/Lecture');
 const { getDateTimeMoment } = require('../utils/time');
 const moment = require('moment');
-const Instructor = require('../models/instructorModel');
-const Course = require('../models/courseModel');
+const Instructor = require('../models/Instructor');
+const Course = require('../models/Course');
 
 // GET all lectures
 exports.getLectures = async (req, res) => {
